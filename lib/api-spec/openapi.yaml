@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: API specification for Technical Tutorial Hub
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: posts
+    description: Blog posts and tutorials
+  - name: newsletter
+    description: Newsletter subscriptions
+  - name: feedback
+    description: Post feedback
 paths:
   /healthz:
     get:
@@ -24,6 +30,217 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /posts:
+    get:
+      operationId: listPosts
+      tags: [posts]
+      summary: List all posts
+      description: Returns all blog posts, tutorials and how-to guides
+      parameters:
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [blog, tutorial, how-to]
+          description: Filter by category
+        - name: tag
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter by tag
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+          description: Max number of posts
+        - name: offset
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+          description: Pagination offset
+      responses:
+        "200":
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PostSummary"
+                  total:
+                    type: integer
+                required:
+                  - posts
+                  - total
+
+  /posts/featured:
+    get:
+      operationId: getFeaturedPosts
+      tags: [posts]
+      summary: Get featured posts
+      description: Returns featured/pinned posts for the homepage
+      responses:
+        "200":
+          description: Featured posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PostSummary"
+                required:
+                  - posts
+
+  /posts/recent:
+    get:
+      operationId: getRecentPosts
+      tags: [posts]
+      summary: Get recent posts
+      description: Returns the most recently published posts
+      parameters:
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 6
+      responses:
+        "200":
+          description: Recent posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PostSummary"
+                required:
+                  - posts
+
+  /posts/stats:
+    get:
+      operationId: getPostsStats
+      tags: [posts]
+      summary: Get content statistics
+      description: Returns stats like total posts, categories breakdown, popular tags
+      responses:
+        "200":
+          description: Content statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContentStats"
+
+  /posts/{slug}:
+    get:
+      operationId: getPost
+      tags: [posts]
+      summary: Get a single post by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Post detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /posts/{slug}/related:
+    get:
+      operationId: getRelatedPosts
+      tags: [posts]
+      summary: Get related posts
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Related posts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/PostSummary"
+                required:
+                  - posts
+
+  /newsletter/subscribe:
+    post:
+      operationId: subscribeNewsletter
+      tags: [newsletter]
+      summary: Subscribe to newsletter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewsletterSubscribeBody"
+      responses:
+        "201":
+          description: Subscribed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewsletterSubscribeResponse"
+        "409":
+          description: Already subscribed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /feedback:
+    post:
+      operationId: submitFeedback
+      tags: [feedback]
+      summary: Submit post feedback (was this helpful?)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackBody"
+      responses:
+        "201":
+          description: Feedback recorded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +251,230 @@ components:
       required:
         - status
 
+    PostSummary:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        excerpt:
+          type: string
+        category:
+          type: string
+          enum: [blog, tutorial, how-to]
+        tags:
+          type: array
+          items:
+            type: string
+        readingTimeMinutes:
+          type: integer
+        publishedAt:
+          type: string
+          format: date-time
+        featured:
+          type: boolean
+        coverImageUrl:
+          type: string
+          nullable: true
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          nullable: true
+      required:
+        - id
+        - slug
+        - title
+        - excerpt
+        - category
+        - tags
+        - readingTimeMinutes
+        - publishedAt
+        - featured
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [blog, tutorial, how-to]
+        tags:
+          type: array
+          items:
+            type: string
+        readingTimeMinutes:
+          type: integer
+        publishedAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+          nullable: true
+        featured:
+          type: boolean
+        coverImageUrl:
+          type: string
+          nullable: true
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          nullable: true
+        tableOfContents:
+          type: array
+          items:
+            $ref: "#/components/schemas/TocItem"
+        series:
+          type: string
+          nullable: true
+        seriesOrder:
+          type: integer
+          nullable: true
+        affiliateLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/AffiliateLink"
+        helpfulCount:
+          type: integer
+        notHelpfulCount:
+          type: integer
+      required:
+        - id
+        - slug
+        - title
+        - excerpt
+        - content
+        - category
+        - tags
+        - readingTimeMinutes
+        - publishedAt
+        - featured
+        - tableOfContents
+        - affiliateLinks
+        - helpfulCount
+        - notHelpfulCount
+
+    TocItem:
+      type: object
+      properties:
+        id:
+          type: string
+        text:
+          type: string
+        level:
+          type: integer
+      required:
+        - id
+        - text
+        - level
+
+    AffiliateLink:
+      type: object
+      properties:
+        label:
+          type: string
+        url:
+          type: string
+        description:
+          type: string
+          nullable: true
+      required:
+        - label
+        - url
+
+    ContentStats:
+      type: object
+      properties:
+        totalPosts:
+          type: integer
+        byCategory:
+          type: object
+          additionalProperties:
+            type: integer
+        popularTags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+              count:
+                type: integer
+            required:
+              - tag
+              - count
+        totalSubscribers:
+          type: integer
+      required:
+        - totalPosts
+        - byCategory
+        - popularTags
+        - totalSubscribers
+
+    NewsletterSubscribeBody:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          nullable: true
+      required:
+        - email
+
+    NewsletterSubscribeResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        alreadySubscribed:
+          type: boolean
+      required:
+        - message
+        - alreadySubscribed
+
+    FeedbackBody:
+      type: object
+      properties:
+        postSlug:
+          type: string
+        helpful:
+          type: boolean
+      required:
+        - postSlug
+        - helpful
+
+    FeedbackResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        helpfulCount:
+          type: integer
+        notHelpfulCount:
+          type: integer
+      required:
+        - message
+        - helpfulCount
+        - notHelpfulCount
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
