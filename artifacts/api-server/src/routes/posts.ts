@@ -6,6 +6,8 @@ import {
   GetPostParams,
   GetRelatedPostsParams,
   GetRecentPostsQueryParams,
+  CreatePostBody,
+  UpdatePostBody,
 } from "@workspace/api-zod";
 
 const router: IRouter = Router();
@@ -23,6 +25,14 @@ async function getPostWithDetails(postId: number) {
       .where(eq(affiliateLinksTable.postId, postId)),
   ]);
   return { toc, affiliates };
+}
+
+function formatPost(post: typeof postsTable.$inferSelect, toc: typeof postTocTable.$inferSelect[], affiliates: typeof affiliateLinksTable.$inferSelect[]) {
+  return {
+    ...post,
+    tableOfContents: toc.map(t => ({ id: t.tocId, text: t.text, level: t.level })),
+    affiliateLinks: affiliates.map(a => ({ label: a.label, url: a.url, description: a.description })),
+  };
 }
 
 router.get("/posts", async (req, res): Promise<void> => {
@@ -55,6 +65,47 @@ router.get("/posts", async (req, res): Promise<void> => {
   ]);
 
   res.json({ posts, total: count });
+});
+
+router.post("/posts", async (req, res): Promise<void> => {
+  const parsed = CreatePostBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const data = parsed.data;
+
+  const existing = await db
+    .select({ id: postsTable.id })
+    .from(postsTable)
+    .where(eq(postsTable.slug, data.slug));
+
+  if (existing.length > 0) {
+    res.status(409).json({ error: "A post with this slug already exists" });
+    return;
+  }
+
+  const [post] = await db
+    .insert(postsTable)
+    .values({
+      slug: data.slug,
+      title: data.title,
+      excerpt: data.excerpt,
+      content: data.content,
+      category: data.category as "blog" | "tutorial" | "how-to",
+      tags: data.tags ?? [],
+      readingTimeMinutes: data.readingTimeMinutes ?? 5,
+      featured: data.featured ?? false,
+      coverImageUrl: data.coverImageUrl ?? null,
+      difficulty: (data.difficulty ?? null) as "beginner" | "intermediate" | "advanced" | null,
+      series: data.series ?? null,
+      seriesOrder: data.seriesOrder ?? null,
+      publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
+    })
+    .returning();
+
+  res.status(201).json(formatPost(post, [], []));
 });
 
 router.get("/posts/featured", async (_req, res): Promise<void> => {
@@ -128,11 +179,70 @@ router.get("/posts/:slug", async (req, res): Promise<void> => {
 
   const { toc, affiliates } = await getPostWithDetails(post.id);
 
-  res.json({
-    ...post,
-    tableOfContents: toc.map(t => ({ id: t.tocId, text: t.text, level: t.level })),
-    affiliateLinks: affiliates.map(a => ({ label: a.label, url: a.url, description: a.description })),
-  });
+  res.json(formatPost(post, toc, affiliates));
+});
+
+router.put("/posts/:slug/update", async (req, res): Promise<void> => {
+  const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
+  const parsed = UpdatePostBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const [existing] = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.slug, rawSlug));
+
+  if (!existing) {
+    res.status(404).json({ error: "Post not found" });
+    return;
+  }
+
+  const data = parsed.data;
+  const updateData: Partial<typeof postsTable.$inferInsert> = {};
+
+  if (data.title !== undefined) updateData.title = data.title;
+  if (data.excerpt !== undefined) updateData.excerpt = data.excerpt;
+  if (data.content !== undefined) updateData.content = data.content;
+  if (data.category !== undefined) updateData.category = data.category as "blog" | "tutorial" | "how-to";
+  if (data.tags !== undefined) updateData.tags = data.tags;
+  if (data.readingTimeMinutes !== undefined) updateData.readingTimeMinutes = data.readingTimeMinutes;
+  if (data.featured !== undefined) updateData.featured = data.featured;
+  if (data.coverImageUrl !== undefined) updateData.coverImageUrl = data.coverImageUrl ?? null;
+  if (data.difficulty !== undefined) updateData.difficulty = (data.difficulty ?? null) as "beginner" | "intermediate" | "advanced" | null;
+  if (data.series !== undefined) updateData.series = data.series ?? null;
+  if (data.seriesOrder !== undefined) updateData.seriesOrder = data.seriesOrder ?? null;
+
+  const [updated] = await db
+    .update(postsTable)
+    .set(updateData)
+    .where(eq(postsTable.slug, rawSlug))
+    .returning();
+
+  const { toc, affiliates } = await getPostWithDetails(updated.id);
+  res.json(formatPost(updated, toc, affiliates));
+});
+
+router.delete("/posts/:slug/delete", async (req, res): Promise<void> => {
+  const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
+
+  const [post] = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.slug, rawSlug));
+
+  if (!post) {
+    res.status(404).json({ error: "Post not found" });
+    return;
+  }
+
+  await db.delete(postTocTable).where(eq(postTocTable.postId, post.id));
+  await db.delete(affiliateLinksTable).where(eq(affiliateLinksTable.postId, post.id));
+  await db.delete(postsTable).where(eq(postsTable.id, post.id));
+
+  res.status(204).end();
 });
 
 router.get("/posts/:slug/related", async (req, res): Promise<void> => {

@@ -133,6 +133,81 @@ export interface ErrorResponse {
   error: string;
 }
 
+export interface Subscriber {
+  id: number;
+  email: string;
+  name?: string | null;
+  subscribedAt: string;
+}
+
+export type CreatePostBodyCategory =
+  (typeof CreatePostBodyCategory)[keyof typeof CreatePostBodyCategory];
+
+export const CreatePostBodyCategory = {
+  blog: "blog",
+  tutorial: "tutorial",
+  "how-to": "how-to",
+} as const;
+
+export type CreatePostBodyDifficulty =
+  | (typeof CreatePostBodyDifficulty)[keyof typeof CreatePostBodyDifficulty]
+  | null;
+
+export const CreatePostBodyDifficulty = {
+  beginner: "beginner",
+  intermediate: "intermediate",
+  advanced: "advanced",
+} as const;
+
+export interface CreatePostBody {
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  category: CreatePostBodyCategory;
+  tags?: string[];
+  readingTimeMinutes?: number;
+  featured?: boolean;
+  coverImageUrl?: string | null;
+  difficulty?: CreatePostBodyDifficulty;
+  series?: string | null;
+  seriesOrder?: number | null;
+  publishedAt?: string | null;
+}
+
+export type UpdatePostBodyCategory =
+  (typeof UpdatePostBodyCategory)[keyof typeof UpdatePostBodyCategory];
+
+export const UpdatePostBodyCategory = {
+  blog: "blog",
+  tutorial: "tutorial",
+  "how-to": "how-to",
+} as const;
+
+export type UpdatePostBodyDifficulty =
+  | (typeof UpdatePostBodyDifficulty)[keyof typeof UpdatePostBodyDifficulty]
+  | null;
+
+export const UpdatePostBodyDifficulty = {
+  beginner: "beginner",
+  intermediate: "intermediate",
+  advanced: "advanced",
+} as const;
+
+export interface UpdatePostBody {
+  title?: string;
+  excerpt?: string;
+  content?: string;
+  category?: UpdatePostBodyCategory;
+  tags?: string[];
+  readingTimeMinutes?: number;
+  featured?: boolean;
+  coverImageUrl?: string | null;
+  difficulty?: UpdatePostBodyDifficulty;
+  series?: string | null;
+  seriesOrder?: number | null;
+}
+
 export type ListPostsParams = {
   /**
    * Filter by category
@@ -180,4 +255,9 @@ export type GetRecentPosts200 = {
 
 export type GetRelatedPosts200 = {
   posts: PostSummary[];
+};
+
+export type ListSubscribers200 = {
+  subscribers: Subscriber[];
+  total: number;
 };

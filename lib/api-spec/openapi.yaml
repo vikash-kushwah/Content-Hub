@@ -82,6 +82,29 @@ paths:
                 required:
                   - posts
                   - total
+    post:
+      operationId: createPost
+      tags: [posts]
+      summary: Create a new post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePostBody"
+      responses:
+        "201":
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "409":
+          description: Slug already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /posts/featured:
     get:
@@ -196,6 +219,102 @@ paths:
                       $ref: "#/components/schemas/PostSummary"
                 required:
                   - posts
+
+  /posts/{slug}/update:
+    put:
+      operationId: updatePost
+      tags: [posts]
+      summary: Update an existing post
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePostBody"
+      responses:
+        "200":
+          description: Post updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /posts/{slug}/delete:
+    delete:
+      operationId: deletePost
+      tags: [posts]
+      summary: Delete a post
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Post deleted
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /newsletter/subscribers:
+    get:
+      operationId: listSubscribers
+      tags: [newsletter]
+      summary: List all newsletter subscribers
+      responses:
+        "200":
+          description: List of subscribers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscribers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Subscriber"
+                  total:
+                    type: integer
+                required:
+                  - subscribers
+                  - total
+
+  /newsletter/subscribers/{id}:
+    delete:
+      operationId: deleteSubscriber
+      tags: [newsletter]
+      summary: Delete a subscriber
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Subscriber deleted
+        "404":
+          description: Subscriber not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /newsletter/subscribe:
     post:
@@ -478,3 +597,101 @@ components:
           type: string
       required:
         - error
+
+    Subscriber:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+          nullable: true
+        subscribedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - subscribedAt
+
+    CreatePostBody:
+      type: object
+      properties:
+        slug:
+          type: string
+        title:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [blog, tutorial, how-to]
+        tags:
+          type: array
+          items:
+            type: string
+        readingTimeMinutes:
+          type: integer
+        featured:
+          type: boolean
+        coverImageUrl:
+          type: string
+          nullable: true
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          nullable: true
+        series:
+          type: string
+          nullable: true
+        seriesOrder:
+          type: integer
+          nullable: true
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+        - slug
+        - title
+        - excerpt
+        - content
+        - category
+
+    UpdatePostBody:
+      type: object
+      properties:
+        title:
+          type: string
+        excerpt:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [blog, tutorial, how-to]
+        tags:
+          type: array
+          items:
+            type: string
+        readingTimeMinutes:
+          type: integer
+        featured:
+          type: boolean
+        coverImageUrl:
+          type: string
+          nullable: true
+        difficulty:
+          type: string
+          enum: [beginner, intermediate, advanced]
+          nullable: true
+        series:
+          type: string
+          nullable: true
+        seriesOrder:
+          type: integer
+          nullable: true

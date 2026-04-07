@@ -58,6 +58,25 @@ export const ListPostsResponse = zod.object({
 });
 
 /**
+ * @summary Create a new post
+ */
+export const CreatePostBody = zod.object({
+  slug: zod.string(),
+  title: zod.string(),
+  excerpt: zod.string(),
+  content: zod.string(),
+  category: zod.enum(["blog", "tutorial", "how-to"]),
+  tags: zod.array(zod.string()).optional(),
+  readingTimeMinutes: zod.number().optional(),
+  featured: zod.boolean().optional(),
+  coverImageUrl: zod.string().nullish(),
+  difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
+  series: zod.string().nullish(),
+  seriesOrder: zod.number().nullish(),
+  publishedAt: zod.coerce.date().nullish(),
+});
+
+/**
  * Returns featured/pinned posts for the homepage
  * @summary Get featured posts
  */
@@ -187,6 +206,90 @@ export const GetRelatedPostsResponse = zod.object({
       difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
     }),
   ),
+});
+
+/**
+ * @summary Update an existing post
+ */
+export const UpdatePostParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const UpdatePostBody = zod.object({
+  title: zod.string().optional(),
+  excerpt: zod.string().optional(),
+  content: zod.string().optional(),
+  category: zod.enum(["blog", "tutorial", "how-to"]).optional(),
+  tags: zod.array(zod.string()).optional(),
+  readingTimeMinutes: zod.number().optional(),
+  featured: zod.boolean().optional(),
+  coverImageUrl: zod.string().nullish(),
+  difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
+  series: zod.string().nullish(),
+  seriesOrder: zod.number().nullish(),
+});
+
+export const UpdatePostResponse = zod.object({
+  id: zod.number(),
+  slug: zod.string(),
+  title: zod.string(),
+  excerpt: zod.string(),
+  content: zod.string(),
+  category: zod.enum(["blog", "tutorial", "how-to"]),
+  tags: zod.array(zod.string()),
+  readingTimeMinutes: zod.number(),
+  publishedAt: zod.coerce.date(),
+  updatedAt: zod.coerce.date().nullish(),
+  featured: zod.boolean(),
+  coverImageUrl: zod.string().nullish(),
+  difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
+  tableOfContents: zod.array(
+    zod.object({
+      id: zod.string(),
+      text: zod.string(),
+      level: zod.number(),
+    }),
+  ),
+  series: zod.string().nullish(),
+  seriesOrder: zod.number().nullish(),
+  affiliateLinks: zod.array(
+    zod.object({
+      label: zod.string(),
+      url: zod.string(),
+      description: zod.string().nullish(),
+    }),
+  ),
+  helpfulCount: zod.number(),
+  notHelpfulCount: zod.number(),
+});
+
+/**
+ * @summary Delete a post
+ */
+export const DeletePostParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+/**
+ * @summary List all newsletter subscribers
+ */
+export const ListSubscribersResponse = zod.object({
+  subscribers: zod.array(
+    zod.object({
+      id: zod.number(),
+      email: zod.string(),
+      name: zod.string().nullish(),
+      subscribedAt: zod.coerce.date(),
+    }),
+  ),
+  total: zod.number(),
+});
+
+/**
+ * @summary Delete a subscriber
+ */
+export const DeleteSubscriberParams = zod.object({
+  id: zod.coerce.number(),
 });
 
 /**
