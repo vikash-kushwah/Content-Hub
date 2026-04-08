@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "ky72ZpLzJfWljL8KVlptE"
+uri = "file://DEVDOCS_GUIDE.md"
+type = "text"
+title = "DevDocs Complete Site Guide"

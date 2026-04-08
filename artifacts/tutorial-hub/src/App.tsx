@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation, Redirect } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +15,15 @@ import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminPostList from "@/pages/admin/PostList";
 import { NewPostPage, EditPostPage } from "@/pages/admin/PostEditor";
 import AdminSubscribers from "@/pages/admin/Subscribers";
+import { AdminLogin } from "@/pages/admin/AdminLogin";
+import { AdminAuthProvider, useAdminAuth, getAdminToken } from "@/lib/adminAuth";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
+import { useEffect } from "react";
+
+setAuthTokenGetter(() => {
+  const token = getAdminToken();
+  return token ? token : null;
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,20 +34,40 @@ const queryClient = new QueryClient({
   },
 });
 
+function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAdminAuth();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin />;
+  }
+
+  return <>{children}</>;
+}
+
 function AppRoutes() {
   const [location] = useLocation();
   const isAdmin = location.startsWith("/admin");
 
   if (isAdmin) {
     return (
-      <Switch>
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/posts" component={AdminPostList} />
-        <Route path="/admin/posts/new" component={NewPostPage} />
-        <Route path="/admin/posts/:slug/edit" component={EditPostPage} />
-        <Route path="/admin/subscribers" component={AdminSubscribers} />
-        <Route component={NotFound} />
-      </Switch>
+      <AdminGuard>
+        <Switch>
+          <Route path="/admin" component={AdminDashboard} />
+          <Route path="/admin/posts" component={AdminPostList} />
+          <Route path="/admin/posts/new" component={NewPostPage} />
+          <Route path="/admin/posts/:slug/edit" component={EditPostPage} />
+          <Route path="/admin/subscribers" component={AdminSubscribers} />
+          <Route component={NotFound} />
+        </Switch>
+      </AdminGuard>
     );
   }
 
@@ -63,14 +92,16 @@ function AppRoutes() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <AppRoutes />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <AdminAuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <AppRoutes />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </AdminAuthProvider>
   );
 }
 
