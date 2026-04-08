@@ -1,15 +1,19 @@
-import { Switch, Route, Router as WouterRouter, useLocation, Redirect } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { CookieBanner } from "@/components/CookieBanner";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import Home from "@/pages/Home";
 import Blog from "@/pages/Blog";
 import Tutorials from "@/pages/Tutorials";
 import Resources from "@/pages/Resources";
 import Newsletter from "@/pages/Newsletter";
 import PostDetail from "@/pages/PostDetail";
+import About from "@/pages/About";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import NotFound from "@/pages/not-found";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminPostList from "@/pages/admin/PostList";
@@ -18,12 +22,8 @@ import AdminSubscribers from "@/pages/admin/Subscribers";
 import { AdminLogin } from "@/pages/admin/AdminLogin";
 import { AdminAuthProvider, useAdminAuth, getAdminToken } from "@/lib/adminAuth";
 import { setAuthTokenGetter } from "@workspace/api-client-react";
-import { useEffect } from "react";
 
-setAuthTokenGetter(() => {
-  const token = getAdminToken();
-  return token ? token : null;
-});
+setAuthTokenGetter(() => getAdminToken());
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -81,11 +81,15 @@ function AppRoutes() {
           <Route path="/tutorials" component={Tutorials} />
           <Route path="/resources" component={Resources} />
           <Route path="/newsletter" component={Newsletter} />
+          <Route path="/about" component={About} />
+          <Route path="/privacy" component={PrivacyPolicy} />
           <Route path="/posts/:slug" component={PostDetail} />
           <Route component={NotFound} />
         </Switch>
       </main>
       <Footer />
+      <CookieBanner />
+      <ScrollToTop />
     </>
   );
 }

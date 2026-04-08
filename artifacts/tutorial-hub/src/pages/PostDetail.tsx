@@ -5,7 +5,7 @@ import { PostCard } from "@/components/PostCard";
 import { formatDate, categoryLabel, categoryColor, difficultyColor, cn } from "@/lib/utils";
 import {
   Clock, Calendar, ArrowLeft, ThumbsUp, ThumbsDown, ExternalLink,
-  CheckCircle, AlertCircle, Loader2, BookOpen
+  CheckCircle, Loader2, BookOpen, Twitter, Linkedin, Link2, Check
 } from "lucide-react";
 
 function ReadingProgress() {
@@ -59,6 +59,54 @@ function TableOfContents({ items, activeId }: { items: TocItem[]; activeId: stri
         </nav>
       </div>
     </aside>
+  );
+}
+
+function ShareButtons({ title, slug }: { title: string; slug: string }) {
+  const [copied, setCopied] = useState(false);
+  const url = typeof window !== "undefined"
+    ? `${window.location.origin}/posts/${slug}`
+    : `/posts/${slug}`;
+
+  function copyLink() {
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+  const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+
+  return (
+    <div className="flex items-center gap-2 mt-4">
+      <span className="text-xs text-muted-foreground mr-1">Share:</span>
+      <a
+        href={tweetUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#1DA1F2]/10 text-[#1DA1F2] hover:bg-[#1DA1F2]/20 transition-colors"
+      >
+        <Twitter className="w-3.5 h-3.5" />
+        Twitter
+      </a>
+      <a
+        href={linkedinUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors"
+      >
+        <Linkedin className="w-3.5 h-3.5" />
+        LinkedIn
+      </a>
+      <button
+        onClick={copyLink}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+      >
+        {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Link2 className="w-3.5 h-3.5" />}
+        {copied ? "Copied!" : "Copy link"}
+      </button>
+    </div>
   );
 }
 
@@ -243,6 +291,8 @@ export default function PostDetail() {
                 ))}
               </div>
             )}
+
+            <ShareButtons title={post.title} slug={post.slug} />
           </div>
 
           {post.coverImageUrl && (

@@ -12,11 +12,22 @@ export function Footer() {
               <span>DevDocs</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              In-depth guides, tutorials, and how-tos on Astro, static sites, performance, TypeScript, and modern web development.
+              In-depth guides, tutorials, and how-tos on Astro, TypeScript, performance, React, and modern web development.
             </p>
-            <p className="text-xs text-muted-foreground mt-4">
-              This site contains affiliate links. I only recommend tools I actually use and trust.
+            <p className="text-xs text-muted-foreground mt-3">
+              This site contains affiliate links. We only recommend tools we actually use and trust.
             </p>
+            <div className="flex items-center gap-3 mt-4">
+              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
+                <Github className="w-4 h-4" />
+              </a>
+              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
+                <Twitter className="w-4 h-4" />
+              </a>
+              <a href="/api/rss.xml" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="RSS Feed" target="_blank" rel="noopener noreferrer">
+                <Rss className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
           <div>
@@ -25,10 +36,11 @@ export function Footer() {
               {[
                 { href: "/blog", label: "Blog" },
                 { href: "/tutorials", label: "Tutorials" },
-                { href: "/tutorials?category=how-to", label: "How-To Guides" },
+                { href: "/tutorials", label: "How-To Guides" },
+                { href: "/resources", label: "Resources" },
                 { href: "/newsletter", label: "Newsletter" },
               ].map(link => (
-                <li key={link.href}>
+                <li key={link.label}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                     {link.label}
                   </Link>
@@ -41,7 +53,8 @@ export function Footer() {
             <h3 className="font-semibold text-sm text-foreground mb-3">More</h3>
             <ul className="space-y-2">
               {[
-                { href: "/resources", label: "Resources" },
+                { href: "/about", label: "About" },
+                { href: "/privacy", label: "Privacy Policy" },
                 { href: "/newsletter", label: "Free Cheat Sheet" },
               ].map(link => (
                 <li key={link.href}>
@@ -51,17 +64,6 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-            <div className="flex items-center gap-3 mt-6">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-                <Github className="w-4 h-4" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a href="/api/rss" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="RSS">
-                <Rss className="w-4 h-4" />
-              </a>
-            </div>
           </div>
         </div>
 
@@ -69,9 +71,11 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} DevDocs. All rights reserved.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Disclosure: Posts may contain affiliate links.
-          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link href="/about" className="text-xs text-muted-foreground hover:text-foreground transition-colors">About</Link>
+            <p className="text-xs text-muted-foreground">Posts may contain affiliate links.</p>
+          </div>
         </div>
       </div>
     </footer>
