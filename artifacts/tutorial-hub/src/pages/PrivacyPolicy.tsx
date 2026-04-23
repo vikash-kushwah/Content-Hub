@@ -1,10 +1,20 @@
 import { Shield } from "lucide-react";
+import { SEO, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 export default function PrivacyPolicy() {
   const lastUpdated = "April 8, 2026";
 
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title="Privacy Policy | DevDocs"
+        description="DevDocs privacy policy. Learn how we collect, use, and protect your personal information, including details on cookies, Google AdSense, and affiliate links."
+        path="/privacy"
+        jsonLd={buildBreadcrumbsJsonLd([
+          { name: "Home", url: "/" },
+          { name: "Privacy Policy", url: "/privacy" },
+        ])}
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full mb-4">

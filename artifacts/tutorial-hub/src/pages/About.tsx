@@ -1,9 +1,20 @@
 import { BookOpen, Code2, Zap, Mail, ExternalLink } from "lucide-react";
 import { Link } from "wouter";
+import { SEO, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 export default function About() {
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title="About DevDocs — Built for Developers Who Want Real Answers"
+        description="DevDocs is a technical blog and tutorial site dedicated to in-depth, practical content on modern web development. Learn about our mission and what makes us different."
+        path="/about"
+        keywords={["about devdocs", "web development blog", "tutorial site", "technical content"]}
+        jsonLd={buildBreadcrumbsJsonLd([
+          { name: "Home", url: "/" },
+          { name: "About", url: "/about" },
+        ])}
+      />
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <div className="mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full mb-4">

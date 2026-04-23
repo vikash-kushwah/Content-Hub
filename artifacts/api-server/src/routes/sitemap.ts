@@ -18,6 +18,8 @@ router.get("/sitemap.xml", async (_req, res): Promise<void> => {
     { url: `${base}/tutorials`, priority: "0.9", changefreq: "daily" },
     { url: `${base}/resources`, priority: "0.7", changefreq: "weekly" },
     { url: `${base}/newsletter`, priority: "0.6", changefreq: "monthly" },
+    { url: `${base}/about`, priority: "0.5", changefreq: "monthly" },
+    { url: `${base}/privacy`, priority: "0.3", changefreq: "yearly" },
   ];
 
   const postUrls = posts.map(p => ({
@@ -56,9 +58,27 @@ ${allUrls.join("")}
 router.get("/robots.txt", (_req, res): void => {
   const base = process.env["SITE_URL"] ?? "https://devdocs.replit.app";
   res.setHeader("Content-Type", "text/plain");
+  res.setHeader("Cache-Control", "public, max-age=86400");
   res.send(`User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /api/admin
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
+
+# Allow major AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
 
 Sitemap: ${base}/api/sitemap.xml
 `);

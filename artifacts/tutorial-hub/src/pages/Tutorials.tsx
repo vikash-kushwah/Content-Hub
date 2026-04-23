@@ -3,6 +3,7 @@ import { useListPosts } from "@workspace/api-client-react";
 import { PostCard } from "@/components/PostCard";
 import { BookOpen, ChevronLeft, ChevronRight, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SEO, buildBreadcrumbsJsonLd, buildItemListJsonLd } from "@/lib/seo";
 
 const CATEGORIES = [
   { value: undefined, label: "All" },
@@ -20,6 +21,10 @@ const DIFFICULTIES = [
 const PAGE_SIZE = 9;
 
 export default function Tutorials() {
+  return <TutorialsPage />;
+}
+
+function TutorialsPage() {
   const [category, setCategory] = useState<string | undefined>("tutorial");
   const [difficulty, setDifficulty] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(0);
@@ -39,8 +44,29 @@ export default function Tutorials() {
     setPage(0);
   };
 
+  const totalCount = data?.total ?? 0;
+
+  const seoTitle = category === "how-to"
+    ? "How-To Guides — Quick Developer Solutions | DevDocs"
+    : category === "tutorial"
+      ? "Tutorials — Step-by-Step Coding Guides | DevDocs"
+      : "Tutorials & How-To Guides for Developers | DevDocs";
+
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title={seoTitle}
+        description={`${totalCount > 0 ? totalCount + ' ' : ''}step-by-step ${category === "how-to" ? "how-to guides" : "tutorials"} on Astro, TypeScript, React, performance, and modern web development. Filter by difficulty.`}
+        path="/tutorials"
+        keywords={["tutorials", "how-to", "step-by-step", "coding guides", "web development", "astro", "typescript", "react", difficulty].filter(Boolean) as string[]}
+        jsonLd={[
+          buildBreadcrumbsJsonLd([
+            { name: "Home", url: "/" },
+            { name: "Tutorials", url: "/tutorials" },
+          ]),
+          ...(data?.posts && data.posts.length > 0 ? [buildItemListJsonLd(data.posts)] : []),
+        ]}
+      />
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
           <div className="flex items-center gap-2 text-primary text-sm font-medium mb-2">

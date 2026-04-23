@@ -26,7 +26,23 @@ The main Technical Tutorial Hub website "DevDocs".
 - Tutorials page with difficulty filtering
 - Resources page (affiliate links by category)
 - Newsletter page
-- Post detail pages with sticky TOC, feedback widget, and affiliate links
+- Post detail pages with sticky TOC, feedback widget, social share, and affiliate links
+- About + Privacy Policy pages (required for AdSense approval)
+- Cmd/Ctrl+K global search modal
+- Cookie consent banner (GDPR / AdSense)
+- Scroll-to-top button, dark mode toggle
+- 404 page with `noindex`
+- Admin panel at `/admin` (password protected via ADMIN_PASSWORD secret)
+
+### SEO Infrastructure
+Per-page SEO via `src/lib/seo.tsx`:
+- Dynamic `<title>`, meta description, canonical URL, OG, and Twitter Card tags per route
+- JSON-LD structured data: `WebSite` + `Organization` (Home), `BreadcrumbList` (all), `ItemList` (Blog/Tutorials), `TechArticle`/`BlogPosting` (Posts)
+- `noindex` on 404 + missing posts
+- Sitemap at `/api/sitemap.xml` includes all static pages + every post (auto-updated)
+- RSS feed at `/api/rss.xml` (20 most recent posts)
+- robots.txt at `/api/robots.txt` allows GPTBot, Google-Extended, ClaudeBot, CCBot
+- AdSense script loaded in index.html (publisher: ca-pub-6253053806009925)
 
 ### api-server (Preview Path: /api)
 Express 5 backend API serving:

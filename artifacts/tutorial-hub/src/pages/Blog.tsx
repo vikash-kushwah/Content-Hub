@@ -3,6 +3,7 @@ import { useListPosts } from "@workspace/api-client-react";
 import { PostCard } from "@/components/PostCard";
 import { Search, BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SEO, buildBreadcrumbsJsonLd, buildItemListJsonLd } from "@/lib/seo";
 
 const CATEGORIES = [
   { value: undefined, label: "All Posts" },
@@ -14,6 +15,10 @@ const CATEGORIES = [
 const PAGE_SIZE = 9;
 
 export default function Blog() {
+  return <BlogPage />;
+}
+
+function BlogPage() {
   const [category, setCategory] = useState<string | undefined>(undefined);
   const [tag, setTag] = useState<string | undefined>(undefined);
   const [page, setPage] = useState(0);
@@ -33,8 +38,29 @@ export default function Blog() {
     setPage(0);
   };
 
+  const filteredCount = data?.total ?? 0;
+
+  const seoTitle = category
+    ? `${CATEGORIES.find(c => c.value === category)?.label} — Blog | DevDocs`
+    : tag
+      ? `Posts tagged "${tag}" | DevDocs`
+      : "Blog — Tutorials, Guides & How-Tos | DevDocs";
+
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title={seoTitle}
+        description={`Browse ${filteredCount > 0 ? filteredCount : 'all'} in-depth posts on web development, TypeScript, Astro, performance, and more. Filter by category and tags.`}
+        path={page > 0 ? `/blog?page=${page + 1}` : "/blog"}
+        keywords={["blog", "web development", "tutorials", "typescript", "react", "astro", category, tag].filter(Boolean) as string[]}
+        jsonLd={[
+          buildBreadcrumbsJsonLd([
+            { name: "Home", url: "/" },
+            { name: "Blog", url: "/blog" },
+          ]),
+          ...(data?.posts && data.posts.length > 0 ? [buildItemListJsonLd(data.posts)] : []),
+        ]}
+      />
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-2">Blog</h1>

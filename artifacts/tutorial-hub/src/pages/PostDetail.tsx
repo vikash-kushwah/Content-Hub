@@ -7,6 +7,7 @@ import {
   Clock, Calendar, ArrowLeft, ThumbsUp, ThumbsDown, ExternalLink,
   CheckCircle, Loader2, BookOpen, Twitter, Linkedin, Link2, Check
 } from "lucide-react";
+import { SEO, buildArticleJsonLd, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 function ReadingProgress() {
   const [progress, setProgress] = useState(0);
@@ -217,6 +218,12 @@ export default function PostDetail() {
   if (error || !post) {
     return (
       <div className="min-h-screen pt-24 pb-20 flex items-center justify-center">
+        <SEO
+          title="Post not found | DevDocs"
+          description="The post you're looking for doesn't exist or has been moved."
+          path={`/posts/${slug}`}
+          noindex
+        />
         <div className="text-center">
           <BookOpen className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-40" />
           <h1 className="text-2xl font-bold text-foreground mb-2">Post not found</h1>
@@ -230,8 +237,41 @@ export default function PostDetail() {
     );
   }
 
+  const categoryLabelText = categoryLabel(post.category);
+
   return (
     <>
+      <SEO
+        title={post.title}
+        description={post.excerpt}
+        path={`/posts/${post.slug}`}
+        type="article"
+        image={post.coverImageUrl ?? undefined}
+        publishedAt={typeof post.publishedAt === "string" ? post.publishedAt : new Date(post.publishedAt).toISOString()}
+        updatedAt={post.updatedAt ? (typeof post.updatedAt === "string" ? post.updatedAt : new Date(post.updatedAt).toISOString()) : undefined}
+        keywords={post.tags ?? []}
+        tags={post.tags ?? []}
+        author="DevDocs"
+        jsonLd={[
+          buildArticleJsonLd({
+            title: post.title,
+            excerpt: post.excerpt,
+            slug: post.slug,
+            publishedAt: typeof post.publishedAt === "string" ? post.publishedAt : new Date(post.publishedAt).toISOString(),
+            updatedAt: post.updatedAt ? (typeof post.updatedAt === "string" ? post.updatedAt : new Date(post.updatedAt).toISOString()) : null,
+            coverImageUrl: post.coverImageUrl,
+            tags: post.tags ?? [],
+            category: post.category,
+            readingTimeMinutes: post.readingTimeMinutes,
+          }),
+          buildBreadcrumbsJsonLd([
+            { name: "Home", url: "/" },
+            { name: "Blog", url: "/blog" },
+            { name: categoryLabelText, url: `/blog?category=${post.category}` },
+            { name: post.title, url: `/posts/${post.slug}` },
+          ]),
+        ]}
+      />
       <ReadingProgress />
       <div className="min-h-screen pt-24 pb-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">

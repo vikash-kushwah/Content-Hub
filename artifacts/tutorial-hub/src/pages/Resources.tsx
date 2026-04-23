@@ -1,4 +1,5 @@
 import { ExternalLink, AlertCircle, Server, Globe, Wrench, GraduationCap } from "lucide-react";
+import { SEO, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 interface ResourceLink {
   name: string;
@@ -106,6 +107,16 @@ const resources: { category: string; icon: React.ElementType; items: ResourceLin
 export default function Resources() {
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title="Tools & Resources I Actually Use | DevDocs"
+        description="A curated list of hosting providers, developer tools, courses, and books I personally use and recommend for modern web development."
+        path="/resources"
+        keywords={["developer tools", "web hosting", "digitalocean", "cloudflare", "netlify", "vultr", "vps", "developer resources"]}
+        jsonLd={buildBreadcrumbsJsonLd([
+          { name: "Home", url: "/" },
+          { name: "Resources", url: "/resources" },
+        ])}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground mb-2">Tools & Resources</h1>

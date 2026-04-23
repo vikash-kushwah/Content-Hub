@@ -1,5 +1,6 @@
 import { CheckCircle, FileText, Bell, BookOpen, Zap } from "lucide-react";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { SEO, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 const benefits = [
   {
@@ -27,6 +28,16 @@ const benefits = [
 export default function Newsletter() {
   return (
     <div className="min-h-screen pt-24 pb-20">
+      <SEO
+        title="Newsletter — Free Astro Performance Cheat Sheet | DevDocs"
+        description="Subscribe to the DevDocs newsletter and get a free Astro performance cheat sheet plus new tutorials delivered to your inbox. No spam, ever."
+        path="/newsletter"
+        keywords={["newsletter", "developer newsletter", "astro cheat sheet", "web development tips", "subscribe"]}
+        jsonLd={buildBreadcrumbsJsonLd([
+          { name: "Home", url: "/" },
+          { name: "Newsletter", url: "/newsletter" },
+        ])}
+      />
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full mb-5">

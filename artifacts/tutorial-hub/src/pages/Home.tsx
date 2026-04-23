@@ -3,6 +3,7 @@ import { ArrowRight, BookOpen, Code2, Zap, Users } from "lucide-react";
 import { useGetFeaturedPosts, useGetRecentPosts, useGetPostsStats, useSubscribeNewsletter } from "@workspace/api-client-react";
 import { PostCard } from "@/components/PostCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
+import { SEO, buildWebsiteJsonLd, buildOrganizationJsonLd } from "@/lib/seo";
 
 function HeroSection() {
   return (
@@ -181,6 +182,21 @@ function NewsletterSection() {
 }
 
 export default function Home() {
+  return (
+    <>
+      <SEO
+        title="DevDocs — Tutorials & How-To Guides for Web Developers"
+        description="In-depth tutorials, how-to guides, and blog posts on Astro, TypeScript, React, performance, and modern web development. Code that actually works."
+        path="/"
+        keywords={["web development", "astro", "typescript", "react", "tutorials", "how-to", "performance", "javascript"]}
+        jsonLd={[buildWebsiteJsonLd(), buildOrganizationJsonLd()]}
+      />
+      {homeContent()}
+    </>
+  );
+}
+
+function homeContent() {
   return (
     <div className="min-h-screen">
       <HeroSection />
