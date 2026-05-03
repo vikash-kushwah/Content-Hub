@@ -30,6 +30,7 @@ export * from "./newsletterSubscribeResponse";
 export * from "./post";
 export * from "./postCategory";
 export * from "./postDifficulty";
+export * from "./postNavigation";
 export * from "./postSummary";
 export * from "./postSummaryCategory";
 export * from "./postSummaryDifficulty";

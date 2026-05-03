@@ -34,6 +34,11 @@ The main Technical Tutorial Hub website "DevDocs".
 - 404 page with `noindex`
 - Admin panel at `/admin` (password protected via ADMIN_PASSWORD secret)
 
+### Post Detail Enhancements
+- Prev/Next post navigation (chronological, via `/api/posts/:slug/navigation`)
+- Inline newsletter CTA between article content and affiliate links
+- AdSense in-article ad unit (fluid, in-article layout) after article body
+
 ### SEO Infrastructure
 Per-page SEO via `src/lib/seo.tsx`:
 - Dynamic `<title>`, meta description, canonical URL, OG, and Twitter Card tags per route

@@ -1,11 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "wouter";
-import { useGetPost, useGetRelatedPosts, useSubmitFeedback } from "@workspace/api-client-react";
+import { useGetPost, useGetRelatedPosts, useSubmitFeedback, useGetPostNavigation } from "@workspace/api-client-react";
 import { PostCard } from "@/components/PostCard";
+import { NewsletterForm } from "@/components/NewsletterForm";
 import { formatDate, categoryLabel, categoryColor, difficultyColor, cn } from "@/lib/utils";
 import {
   Clock, Calendar, ArrowLeft, ThumbsUp, ThumbsDown, ExternalLink,
-  CheckCircle, Loader2, BookOpen, Twitter, Linkedin, Link2, Check
+  CheckCircle, Loader2, BookOpen, Twitter, Linkedin, Link2, Check, ChevronLeft, ChevronRight
 } from "lucide-react";
 import { SEO, buildArticleJsonLd, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
@@ -172,6 +173,9 @@ export default function PostDetail() {
     query: { enabled: !!slug },
   });
   const { data: related } = useGetRelatedPosts(slug ?? "", {
+    query: { enabled: !!slug },
+  });
+  const { data: nav } = useGetPostNavigation(slug ?? "", {
     query: { enabled: !!slug },
   });
 
@@ -348,6 +352,37 @@ export default function PostDetail() {
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
+              {/* AdSense in-article ad */}
+              <div className="my-10 text-center overflow-hidden rounded-xl bg-muted/40 border border-border py-4 px-2">
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mb-2">Advertisement</p>
+                <ins
+                  className="adsbygoogle"
+                  style={{ display: "block", textAlign: "center" }}
+                  data-ad-layout="in-article"
+                  data-ad-format="fluid"
+                  data-ad-client="ca-pub-6253053806009925"
+                  data-ad-slot="1234567890"
+                />
+              </div>
+
+              {/* Inline newsletter CTA */}
+              <div className="my-10 p-6 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0 p-2 bg-primary/15 rounded-lg">
+                    <BookOpen className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-foreground text-base mb-1">
+                      Enjoying this article?
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Get new tutorials, how-to guides, and deep dives delivered straight to your inbox — no spam, ever.
+                    </p>
+                    <NewsletterForm compact className="max-w-md" />
+                  </div>
+                </div>
+              </div>
+
               {post.affiliateLinks.length > 0 && (
                 <div className="mt-12 p-5 bg-card border border-card-border rounded-xl">
                   <h3 className="font-semibold text-foreground mb-1">Recommended Tools</h3>
@@ -389,6 +424,41 @@ export default function PostDetail() {
                     ))}
                   </div>
                 </div>
+              )}
+
+              {/* Prev / Next navigation */}
+              {nav && (nav.prev || nav.next) && (
+                <nav className="mt-12 border-t border-border pt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {nav.prev ? (
+                    <Link
+                      href={`/posts/${nav.prev.slug}`}
+                      className="group flex flex-col gap-1.5 p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-muted/50 transition-all"
+                    >
+                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                        Previous
+                      </span>
+                      <span className="font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                        {nav.prev.title}
+                      </span>
+                    </Link>
+                  ) : <div />}
+
+                  {nav.next ? (
+                    <Link
+                      href={`/posts/${nav.next.slug}`}
+                      className="group flex flex-col gap-1.5 p-4 rounded-xl border border-border hover:border-primary/50 hover:bg-muted/50 transition-all sm:text-right"
+                    >
+                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium sm:justify-end">
+                        Next
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
+                      <span className="font-semibold text-sm text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+                        {nav.next.title}
+                      </span>
+                    </Link>
+                  ) : <div />}
+                </nav>
               )}
             </article>
 

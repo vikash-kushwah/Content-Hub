@@ -209,6 +209,47 @@ export const GetRelatedPostsResponse = zod.object({
 });
 
 /**
+ * Returns the post published immediately before and after the given slug, ordered by publishedAt
+ * @summary Get previous and next posts
+ */
+export const GetPostNavigationParams = zod.object({
+  slug: zod.coerce.string(),
+});
+
+export const GetPostNavigationResponse = zod.object({
+  prev: zod
+    .object({
+      id: zod.number(),
+      slug: zod.string(),
+      title: zod.string(),
+      excerpt: zod.string(),
+      category: zod.enum(["blog", "tutorial", "how-to"]),
+      tags: zod.array(zod.string()),
+      readingTimeMinutes: zod.number(),
+      publishedAt: zod.coerce.date(),
+      featured: zod.boolean(),
+      coverImageUrl: zod.string().nullish(),
+      difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
+    })
+    .nullable(),
+  next: zod
+    .object({
+      id: zod.number(),
+      slug: zod.string(),
+      title: zod.string(),
+      excerpt: zod.string(),
+      category: zod.enum(["blog", "tutorial", "how-to"]),
+      tags: zod.array(zod.string()),
+      readingTimeMinutes: zod.number(),
+      publishedAt: zod.coerce.date(),
+      featured: zod.boolean(),
+      coverImageUrl: zod.string().nullish(),
+      difficulty: zod.enum(["beginner", "intermediate", "advanced"]).nullish(),
+    })
+    .nullable(),
+});
+
+/**
  * @summary Update an existing post
  */
 export const UpdatePostParams = zod.object({

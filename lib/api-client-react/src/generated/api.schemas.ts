@@ -129,6 +129,11 @@ export interface FeedbackResponse {
   notHelpfulCount: number;
 }
 
+export interface PostNavigation {
+  prev: PostSummary | null;
+  next: PostSummary | null;
+}
+
 export interface ErrorResponse {
   error: string;
 }

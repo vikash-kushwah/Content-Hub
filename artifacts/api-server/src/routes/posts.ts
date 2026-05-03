@@ -245,6 +245,40 @@ router.delete("/posts/:slug/delete", async (req, res): Promise<void> => {
   res.status(204).end();
 });
 
+router.get("/posts/:slug/navigation", async (req, res): Promise<void> => {
+  const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
+
+  const [currentPost] = await db
+    .select()
+    .from(postsTable)
+    .where(eq(postsTable.slug, rawSlug));
+
+  if (!currentPost) {
+    res.status(404).json({ error: "Post not found" });
+    return;
+  }
+
+  const [prevPosts, nextPosts] = await Promise.all([
+    db
+      .select()
+      .from(postsTable)
+      .where(sql`${postsTable.publishedAt} < ${currentPost.publishedAt}`)
+      .orderBy(desc(postsTable.publishedAt))
+      .limit(1),
+    db
+      .select()
+      .from(postsTable)
+      .where(sql`${postsTable.publishedAt} > ${currentPost.publishedAt}`)
+      .orderBy(postsTable.publishedAt)
+      .limit(1),
+  ]);
+
+  res.json({
+    prev: prevPosts[0] ?? null,
+    next: nextPosts[0] ?? null,
+  });
+});
+
 router.get("/posts/:slug/related", async (req, res): Promise<void> => {
   const rawSlug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
   const parsed = GetRelatedPostsParams.safeParse({ slug: rawSlug });

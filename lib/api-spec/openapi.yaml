@@ -220,6 +220,32 @@ paths:
                 required:
                   - posts
 
+  /posts/{slug}/navigation:
+    get:
+      operationId: getPostNavigation
+      tags: [posts]
+      summary: Get previous and next posts
+      description: Returns the post published immediately before and after the given slug, ordered by publishedAt
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Adjacent posts
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PostNavigation"
+        "404":
+          description: Post not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
   /posts/{slug}/update:
     put:
       operationId: updatePost
@@ -589,6 +615,21 @@ components:
         - message
         - helpfulCount
         - notHelpfulCount
+
+    PostNavigation:
+      type: object
+      properties:
+        prev:
+          allOf:
+            - $ref: "#/components/schemas/PostSummary"
+          nullable: true
+        next:
+          allOf:
+            - $ref: "#/components/schemas/PostSummary"
+          nullable: true
+      required:
+        - prev
+        - next
 
     ErrorResponse:
       type: object

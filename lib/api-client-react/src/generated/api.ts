@@ -33,6 +33,7 @@ import type {
   NewsletterSubscribeBody,
   NewsletterSubscribeResponse,
   Post,
+  PostNavigation,
   UpdatePostBody,
 } from "./api.schemas";
 
@@ -705,6 +706,94 @@ export function useGetRelatedPosts<
   },
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
   const queryOptions = getGetRelatedPostsQueryOptions(slug, options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
+ * Returns the post published immediately before and after the given slug, ordered by publishedAt
+ * @summary Get previous and next posts
+ */
+export const getGetPostNavigationUrl = (slug: string) => {
+  return `/api/posts/${slug}/navigation`;
+};
+
+export const getPostNavigation = async (
+  slug: string,
+  options?: RequestInit,
+): Promise<PostNavigation> => {
+  return customFetch<PostNavigation>(getGetPostNavigationUrl(slug), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetPostNavigationQueryKey = (slug: string) => {
+  return [`/api/posts/${slug}/navigation`] as const;
+};
+
+export const getGetPostNavigationQueryOptions = <
+  TData = Awaited<ReturnType<typeof getPostNavigation>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostNavigation>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetPostNavigationQueryKey(slug);
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getPostNavigation>>
+  > = ({ signal }) => getPostNavigation(slug, { signal, ...requestOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!slug,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof getPostNavigation>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetPostNavigationQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getPostNavigation>>
+>;
+export type GetPostNavigationQueryError = ErrorType<ErrorResponse>;
+
+/**
+ * @summary Get previous and next posts
+ */
+
+export function useGetPostNavigation<
+  TData = Awaited<ReturnType<typeof getPostNavigation>>,
+  TError = ErrorType<ErrorResponse>,
+>(
+  slug: string,
+  options?: {
+    query?: UseQueryOptions<
+      Awaited<ReturnType<typeof getPostNavigation>>,
+      TError,
+      TData
+    >;
+    request?: SecondParameter<typeof customFetch>;
+  },
+): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetPostNavigationQueryOptions(slug, options);
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
     queryKey: QueryKey;
