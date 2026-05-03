@@ -56,9 +56,9 @@ function TutorialsPage() {
     <div className="min-h-screen pt-24 pb-20">
       <SEO
         title={seoTitle}
-        description={`${totalCount > 0 ? totalCount + ' ' : ''}step-by-step ${category === "how-to" ? "how-to guides" : "tutorials"} on Astro, TypeScript, React, performance, and modern web development. Filter by difficulty.`}
+        description={`${totalCount > 0 ? totalCount + ' ' : ''}step-by-step ${category === "how-to" ? "how-to guides" : "tutorials"} on React, TypeScript, Node.js, CSS, databases, testing, DevOps, and modern web development. Filter by difficulty.`}
         path="/tutorials"
-        keywords={["tutorials", "how-to", "step-by-step", "coding guides", "web development", "astro", "typescript", "react", difficulty].filter(Boolean) as string[]}
+        keywords={["tutorials", "how-to", "step-by-step", "coding guides", "web development", "react", "typescript", "nodejs", "css", "testing", difficulty].filter(Boolean) as string[]}
         jsonLd={[
           buildBreadcrumbsJsonLd([
             { name: "Home", url: "/" },

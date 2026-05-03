@@ -1,5 +1,8 @@
 import { Link } from "wouter";
-import { ArrowRight, BookOpen, Code2, Zap, Users } from "lucide-react";
+import {
+  ArrowRight, BookOpen, Code2, Zap, Users,
+  Terminal, Database, Globe, Shield, GitBranch, TestTube, Cpu, Layers, Palette, Server
+} from "lucide-react";
 import { useGetFeaturedPosts, useGetRecentPosts, useGetPostsStats, useSubscribeNewsletter } from "@workspace/api-client-react";
 import { PostCard } from "@/components/PostCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
@@ -13,15 +16,14 @@ function HeroSection() {
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 text-primary text-xs font-medium rounded-full mb-6 animate-fade-up">
             <Zap className="w-3 h-3" />
-            Deep technical tutorials for real developers
+            Deep technical content for working developers
           </div>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground leading-tight tracking-tight mb-6 animate-fade-up stagger-1">
-            Learn to build{" "}
-            <span className="text-primary">fast, modern</span>{" "}
-            web projects
+            The web dev reference you'll{" "}
+            <span className="text-primary">actually use</span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8 animate-fade-up stagger-2">
-            Step-by-step guides on Astro, TypeScript, performance, deployment, and AI integrations. No filler — just code that works.
+            In-depth tutorials, how-to guides, and practical breakdowns on React, TypeScript, Node.js, CSS, databases, testing, DevOps, and more. No filler — just code that works.
           </p>
           <div className="flex flex-wrap gap-3 animate-fade-up stagger-3">
             <Link
@@ -77,6 +79,51 @@ function StatsBar() {
         ))}
       </div>
     </div>
+  );
+}
+
+const topics = [
+  { icon: Code2,      label: "React",       sub: "Hooks, RSC, performance",  href: "/blog?tag=react" },
+  { icon: Layers,     label: "TypeScript",  sub: "Types, generics, patterns", href: "/blog?tag=typescript" },
+  { icon: Terminal,   label: "JavaScript",  sub: "ES2024, async, modules",   href: "/blog?tag=javascript" },
+  { icon: Palette,    label: "CSS",         sub: "Grid, Tailwind, variables", href: "/blog?tag=css" },
+  { icon: Server,     label: "Node.js",     sub: "Express, APIs, auth",       href: "/blog?tag=nodejs" },
+  { icon: Database,   label: "Databases",   sub: "PostgreSQL, Drizzle, SQL",  href: "/blog?tag=postgresql" },
+  { icon: TestTube,   label: "Testing",     sub: "Vitest, RTL, Playwright",  href: "/blog?tag=testing" },
+  { icon: GitBranch,  label: "Git & CI/CD", sub: "GitHub Actions, workflows", href: "/blog?tag=github-actions" },
+  { icon: Shield,     label: "Security",    sub: "XSS, CSRF, best practices", href: "/blog?tag=security" },
+  { icon: Cpu,        label: "AI / LLMs",   sub: "OpenAI, Claude, embeddings",href: "/blog?tag=ai" },
+  { icon: Globe,      label: "Next.js",     sub: "App Router, RSC, actions",  href: "/blog?tag=nextjs" },
+  { icon: Zap,        label: "Performance", sub: "Bundles, vitals, images",   href: "/blog?tag=performance" },
+];
+
+function TopicsSection() {
+  return (
+    <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-16">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold text-foreground">Topics covered</h2>
+        <Link href="/tutorials" className="text-sm text-primary hover:underline flex items-center gap-1">
+          View all <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {topics.map(({ icon: Icon, label, sub, href }) => (
+          <Link
+            key={label}
+            href={href}
+            className="group flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:border-primary/30 hover:shadow-sm hover:bg-accent/20 transition-all duration-200"
+          >
+            <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/20 transition-colors">
+              <Icon className="w-4 h-4 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors">{label}</p>
+              <p className="text-xs text-muted-foreground leading-snug mt-0.5">{sub}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -164,15 +211,13 @@ function NewsletterSection() {
       <div className="bg-gradient-to-br from-primary/10 via-accent/5 to-transparent border border-primary/20 rounded-2xl p-8 sm:p-12 text-center">
         <div className="max-w-lg mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full mb-4">
-            Free cheat sheet included
+            Free to subscribe
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">
             Stay up to date
           </h2>
           <p className="text-muted-foreground mb-6">
-            Get new tutorials, tips, and the free{" "}
-            <strong className="text-foreground">Astro Performance Cheat Sheet</strong>{" "}
-            delivered to your inbox.
+            New tutorials, practical tips, and the best dev reads — delivered to your inbox. No spam, ever.
           </p>
           <NewsletterForm className="max-w-sm mx-auto" />
         </div>
@@ -185,25 +230,20 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="DevDocs — Tutorials & How-To Guides for Web Developers"
-        description="In-depth tutorials, how-to guides, and blog posts on Astro, TypeScript, React, performance, and modern web development. Code that actually works."
+        title="DevDocs — Web Development Tutorials, Guides & References"
+        description="In-depth tutorials, how-to guides, and blog posts on React, TypeScript, JavaScript, Node.js, CSS, databases, testing, DevOps, and modern web development."
         path="/"
-        keywords={["web development", "astro", "typescript", "react", "tutorials", "how-to", "performance", "javascript"]}
+        keywords={["web development", "react", "typescript", "javascript", "nodejs", "css", "tutorials", "how-to", "performance", "testing", "devops"]}
         jsonLd={[buildWebsiteJsonLd(), buildOrganizationJsonLd()]}
       />
-      {homeContent()}
+      <div className="min-h-screen">
+        <HeroSection />
+        <StatsBar />
+        <TopicsSection />
+        <FeaturedPosts />
+        <RecentPosts />
+        <NewsletterSection />
+      </div>
     </>
-  );
-}
-
-function homeContent() {
-  return (
-    <div className="min-h-screen">
-      <HeroSection />
-      <StatsBar />
-      <FeaturedPosts />
-      <RecentPosts />
-      <NewsletterSection />
-    </div>
   );
 }

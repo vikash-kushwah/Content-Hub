@@ -7,9 +7,9 @@ export default function About() {
     <div className="min-h-screen pt-24 pb-20">
       <SEO
         title="About DevDocs — Built for Developers Who Want Real Answers"
-        description="DevDocs is a technical blog and tutorial site dedicated to in-depth, practical content on modern web development. Learn about our mission and what makes us different."
+        description="DevDocs is a technical blog and tutorial site covering React, TypeScript, JavaScript, Node.js, CSS, databases, testing, and modern web development."
         path="/about"
-        keywords={["about devdocs", "web development blog", "tutorial site", "technical content"]}
+        keywords={["about devdocs", "web development blog", "tutorial site", "technical content", "react typescript javascript"]}
         jsonLd={buildBreadcrumbsJsonLd([
           { name: "Home", url: "/" },
           { name: "About", url: "/about" },
@@ -25,7 +25,7 @@ export default function About() {
             Built for developers who want real answers
           </h1>
           <p className="text-lg text-muted-foreground leading-relaxed">
-            DevDocs is a technical blog and tutorial site dedicated to in-depth, practical content on modern web development — Astro, TypeScript, React, performance, deployment, and more.
+            DevDocs is a technical blog and tutorial site dedicated to practical, in-depth content across the full web development stack — React, TypeScript, JavaScript, Node.js, CSS, databases, testing, DevOps, security, and more.
           </p>
         </div>
 
@@ -34,9 +34,9 @@ export default function About() {
             <h2 className="text-2xl font-bold text-foreground mb-3">What you'll find here</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 not-prose mb-6">
               {[
-                { icon: Code2, title: "Tutorials", desc: "Step-by-step guides that actually work, with real code." },
-                { icon: BookOpen, title: "Blog Posts", desc: "Deep dives, opinions, and technical breakdowns." },
-                { icon: Zap, title: "How-To Guides", desc: "Quick answers to specific development problems." },
+                { icon: Code2, title: "Tutorials", desc: "Step-by-step guides that actually work, with tested, production-ready code." },
+                { icon: BookOpen, title: "Blog Posts", desc: "Deep dives, opinions, and technical breakdowns on modern dev topics." },
+                { icon: Zap, title: "How-To Guides", desc: "Focused answers to specific development problems — no padding." },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="p-4 rounded-xl border border-border bg-card">
                   <Icon className="w-5 h-5 text-primary mb-2" />
@@ -50,7 +50,7 @@ export default function About() {
           <section>
             <h2 className="text-2xl font-bold text-foreground mb-3">Why DevDocs exists</h2>
             <p className="text-muted-foreground leading-relaxed">
-              Too much content online is either too shallow, full of filler, or quickly outdated. DevDocs was created to be different — every post is written with the goal of being the single best resource on that topic. If there are code examples, they actually work. If there's a step-by-step, every step is tested.
+              Too much content online is either too shallow, full of filler, or quickly outdated. DevDocs was created to be different — every post aims to be the single best resource on that topic. If there are code examples, they actually work. If there's a step-by-step guide, every step is tested. Topics are chosen based on what developers actually search for and struggle with day to day.
             </p>
           </section>
 
@@ -58,10 +58,15 @@ export default function About() {
             <h2 className="text-2xl font-bold text-foreground mb-3">Topics covered</h2>
             <div className="flex flex-wrap gap-2 not-prose">
               {[
-                "Astro", "TypeScript", "React", "Vite", "Node.js",
-                "Web Performance", "Core Web Vitals", "Deployment",
-                "DigitalOcean", "Cloudflare", "MDX", "CSS", "Tailwind CSS",
-                "REST APIs", "PostgreSQL", "Static Sites"
+                "React", "React 19", "TypeScript", "JavaScript", "ES2024",
+                "Node.js", "Express", "Next.js", "Vite",
+                "CSS Grid", "Tailwind CSS", "CSS Custom Properties",
+                "PostgreSQL", "Drizzle ORM", "REST APIs",
+                "Vitest", "React Testing Library", "Playwright",
+                "GitHub Actions", "Docker", "CI/CD",
+                "Git", "Web Security", "Performance",
+                "AI APIs", "OpenAI", "Embeddings",
+                "Web Vitals", "Bundle Optimization", "Dark Mode",
               ].map(tag => (
                 <span key={tag} className="text-xs px-2.5 py-1 bg-muted text-muted-foreground rounded-full border border-border">
                   {tag}
@@ -93,7 +98,7 @@ export default function About() {
           <section>
             <h2 className="text-2xl font-bold text-foreground mb-3">Stay in touch</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
-              The best way to follow new content is to subscribe to the newsletter — you'll get new posts delivered to your inbox, no spam.
+              The best way to follow new content is to subscribe to the newsletter — you'll get new posts and dev tips delivered to your inbox, no spam.
             </p>
             <div className="flex flex-wrap gap-3 not-prose">
               <Link

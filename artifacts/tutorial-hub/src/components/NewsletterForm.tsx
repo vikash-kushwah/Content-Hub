@@ -39,7 +39,7 @@ export function NewsletterForm({ compact = false, className }: NewsletterFormPro
         <p className="text-sm text-muted-foreground">
           {alreadySubscribed
             ? "This email is already on the list. Stay tuned for new tutorials."
-            : "Welcome to the list. Expect tutorials, guides, and the free Astro cheat sheet in your inbox."}
+            : "Welcome to the list. Expect tutorials, guides, and the free developer cheat sheet in your inbox."}
         </p>
       </div>
     );

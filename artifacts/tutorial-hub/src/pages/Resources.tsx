@@ -23,7 +23,7 @@ const resources: { category: string; icon: React.ElementType; items: ResourceLin
       },
       {
         name: "Cloudflare Pages",
-        description: "Free static hosting with global CDN, custom domains, and instant cache invalidation. Where I deploy most of my Astro sites.",
+        description: "Free static hosting with a global CDN, custom domains, and instant cache invalidation. Great for React, Next.js, and any static frontend.",
         url: "https://pages.cloudflare.com/",
         badge: "Free Tier",
       },

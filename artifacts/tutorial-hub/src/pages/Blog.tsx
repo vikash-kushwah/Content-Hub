@@ -50,9 +50,9 @@ function BlogPage() {
     <div className="min-h-screen pt-24 pb-20">
       <SEO
         title={seoTitle}
-        description={`Browse ${filteredCount > 0 ? filteredCount : 'all'} in-depth posts on web development, TypeScript, Astro, performance, and more. Filter by category and tags.`}
+        description={`Browse ${filteredCount > 0 ? filteredCount : 'all'} in-depth posts on React, TypeScript, JavaScript, Node.js, CSS, testing, DevOps, and modern web development.`}
         path={page > 0 ? `/blog?page=${page + 1}` : "/blog"}
-        keywords={["blog", "web development", "tutorials", "typescript", "react", "astro", category, tag].filter(Boolean) as string[]}
+        keywords={["blog", "web development", "tutorials", "typescript", "react", "javascript", "nodejs", "css", "testing", category, tag].filter(Boolean) as string[]}
         jsonLd={[
           buildBreadcrumbsJsonLd([
             { name: "Home", url: "/" },

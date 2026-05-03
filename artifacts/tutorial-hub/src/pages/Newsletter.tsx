@@ -1,27 +1,27 @@
-import { CheckCircle, FileText, Bell, BookOpen, Zap } from "lucide-react";
+import { FileText, Bell, BookOpen, Zap } from "lucide-react";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { SEO, buildBreadcrumbsJsonLd } from "@/lib/seo";
 
 const benefits = [
   {
     icon: FileText,
-    title: "Free Astro Performance Cheat Sheet",
-    description: "A one-page PDF reference covering all the critical Astro performance patterns, config options, and deployment settings.",
+    title: "Free Web Dev Cheat Sheet",
+    description: "A concise reference covering TypeScript utility types, React hooks, CSS Grid, common Git commands, and more — all on one page.",
   },
   {
     icon: Bell,
     title: "New tutorials delivered",
-    description: "Get notified when new guides, tutorials, and how-tos are published — no need to keep checking.",
+    description: "Get notified when new guides, tutorials, and how-tos are published — React, Node.js, CSS, testing, DevOps, and more.",
   },
   {
     icon: BookOpen,
     title: "Curated reading picks",
-    description: "Occasional roundups of the best dev articles, tools, and resources I've found interesting.",
+    description: "Occasional roundups of the best dev articles, tools, and resources from around the web — filtered so you don't have to.",
   },
   {
     icon: Zap,
     title: "Early access to products",
-    description: "Subscribers get early access and discounts on any digital products, boilerplates, and courses I release.",
+    description: "Subscribers get early access and discounts on any digital products, boilerplates, and courses we release.",
   },
 ];
 
@@ -29,10 +29,10 @@ export default function Newsletter() {
   return (
     <div className="min-h-screen pt-24 pb-20">
       <SEO
-        title="Newsletter — Free Astro Performance Cheat Sheet | DevDocs"
-        description="Subscribe to the DevDocs newsletter and get a free Astro performance cheat sheet plus new tutorials delivered to your inbox. No spam, ever."
+        title="Newsletter — Free Web Dev Cheat Sheet | DevDocs"
+        description="Subscribe to the DevDocs newsletter and get a free developer cheat sheet plus new tutorials on React, TypeScript, Node.js, and more delivered to your inbox."
         path="/newsletter"
-        keywords={["newsletter", "developer newsletter", "astro cheat sheet", "web development tips", "subscribe"]}
+        keywords={["newsletter", "developer newsletter", "web dev cheat sheet", "react tutorials", "typescript tips", "subscribe"]}
         jsonLd={buildBreadcrumbsJsonLd([
           { name: "Home", url: "/" },
           { name: "Newsletter", url: "/newsletter" },

@@ -12,7 +12,7 @@ export function Footer() {
               <span>DevDocs</span>
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              In-depth guides, tutorials, and how-tos on Astro, TypeScript, performance, React, and modern web development.
+              In-depth guides, tutorials, and how-tos on React, TypeScript, JavaScript, Node.js, CSS, databases, testing, and modern web development.
             </p>
             <p className="text-xs text-muted-foreground mt-3">
               This site contains affiliate links. We only recommend tools we actually use and trust.
@@ -50,12 +50,15 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-sm text-foreground mb-3">More</h3>
+            <h3 className="font-semibold text-sm text-foreground mb-3">Topics</h3>
             <ul className="space-y-2">
               {[
-                { href: "/about", label: "About" },
-                { href: "/privacy", label: "Privacy Policy" },
-                { href: "/newsletter", label: "Free Cheat Sheet" },
+                { href: "/blog?tag=react", label: "React" },
+                { href: "/blog?tag=typescript", label: "TypeScript" },
+                { href: "/blog?tag=nodejs", label: "Node.js" },
+                { href: "/blog?tag=css", label: "CSS" },
+                { href: "/blog?tag=testing", label: "Testing" },
+                { href: "/blog?tag=devops", label: "DevOps" },
               ].map(link => (
                 <li key={link.href}>
                   <Link href={link.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
