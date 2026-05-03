@@ -1,3 +1,10 @@
+# CI — runs on every push/PR to main.
+# NOTE: This is a code quality workflow, not the GitHub sync mechanism.
+# Automatic GitHub sync is handled by scripts/post-merge.sh which runs
+# after every Replit task merge and pushes HEAD to this repository.
+# Replit is the source of truth; GitHub is a read-only backup mirror.
+# Force-push may occur when Replit checkpoint commits diverge from prior
+# task-agent direct pushes — this is expected and intentional.
 name: CI
 
 on:
@@ -15,7 +22,7 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 10
 
       - uses: actions/setup-node@v4
         with:
