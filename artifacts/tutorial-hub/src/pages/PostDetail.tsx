@@ -348,7 +348,7 @@ export default function PostDetail() {
           <div className="flex gap-10">
             <article className="flex-1 min-w-0">
               <div
-                className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-24 prose-code:before:content-none prose-code:after:content-none prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-zinc-900 prose-pre:text-zinc-100"
+                className="prose prose-zinc dark:prose-invert max-w-none prose-headings:scroll-mt-24 prose-code:before:content-none prose-code:after:content-none"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 

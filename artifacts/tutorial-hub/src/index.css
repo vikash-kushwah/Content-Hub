@@ -200,25 +200,46 @@
   transition: width 0.1s ease;
 }
 
-/* Code block styling */
+/* ─── Code block styling ──────────────────────────────────────────────────── */
+
+/* Light mode: soft light background with dark text */
 pre {
   @apply rounded-lg overflow-x-auto text-sm leading-relaxed;
-  background: hsl(222 47% 6%) !important;
+  background: #f6f8fa !important;
+  border: 1px solid #e1e4e8;
 }
 
+/* Dark mode: deep dark background */
 .dark pre {
-  background: hsl(222 47% 4%) !important;
+  background: hsl(222 47% 5%) !important;
+  border-color: hsl(217 33% 14%);
 }
 
+/* code inside pre must NEVER inherit prose-code bg/padding — it causes white bars */
 pre code {
   @apply font-mono;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: inherit !important;
+  color: inherit !important;
 }
 
-/* Prose overrides for dark mode */
+/* ─── Prose overrides ─────────────────────────────────────────────────────── */
+
+/* Light mode prose pre */
 .prose pre {
-  @apply bg-zinc-900 text-zinc-100;
+  background: #f6f8fa !important;
+  color: #24292f;
+  border: 1px solid #e1e4e8;
 }
 
+/* Light mode: inline code (not inside pre) */
+.prose :not(pre) > code {
+  @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+/* Dark mode prose overrides */
 .dark .prose {
   @apply text-zinc-200;
 }
@@ -238,8 +259,16 @@ pre code {
   @apply text-blue-400;
 }
 
-.dark .prose code {
+/* Dark mode inline code (not inside pre) */
+.dark .prose :not(pre) > code {
   @apply text-blue-300 bg-zinc-800;
+}
+
+/* Dark mode pre */
+.dark .prose pre {
+  background: hsl(222 47% 5%) !important;
+  color: #e6edf3;
+  border-color: hsl(217 33% 14%);
 }
 
 .dark .prose blockquote {
